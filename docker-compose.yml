@@ -1,0 +1,50 @@
+version: "3.9"
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: timescoper
+      POSTGRES_USER: timescoper
+      POSTGRES_PASSWORD: timescoper
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    environment:
+      DJANGO_SECRET_KEY: dev-secret-key-change-in-prod
+      DJANGO_DEBUG: "True"
+      DJANGO_ALLOWED_HOSTS: localhost,127.0.0.1
+      DATABASE_URL: postgresql://timescoper:timescoper@db:5432/timescoper
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      CORS_ALLOWED_ORIGINS: http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    volumes:
+      - ./backend:/app
+    command: >
+      sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    environment:
+      VITE_API_BASE_URL: http://localhost:8000
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+
+volumes:
+  pgdata:
