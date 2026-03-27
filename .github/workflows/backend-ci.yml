@@ -1,0 +1,41 @@
+name: Backend CI
+
+on:
+  push:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend-ci.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: pip install -r requirements/development.txt
+
+      - name: Check formatting with Black
+        run: black --check .
+
+      - name: Check import ordering with isort
+        run: isort --check-only .
+
+      - name: Lint with flake8
+        run: flake8 --max-line-length=120 --exclude=migrations .
+
+      - name: Run tests
+        run: pytest --tb=short -q
