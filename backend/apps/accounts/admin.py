@@ -14,7 +14,10 @@ class CustomUserAdmin(BaseUserAdmin):
     ordering = ["-created_at"]
     fieldsets = (
         (None, {"fields": ("email", "password")}),
-        ("Personal info", {"fields": ("first_name", "last_name", "avatar_url", "timezone")}),
+        (
+            "Personal info",
+            {"fields": ("first_name", "last_name", "avatar_url", "timezone")},
+        ),
         ("Permissions", {"fields": ("role", "is_active", "is_staff", "is_superuser")}),
         ("Dates", {"fields": ("created_at", "updated_at")}),
     )
@@ -24,7 +27,14 @@ class CustomUserAdmin(BaseUserAdmin):
             None,
             {
                 "classes": ("wide",),
-                "fields": ("email", "first_name", "last_name", "password1", "password2", "role"),
+                "fields": (
+                    "email",
+                    "first_name",
+                    "last_name",
+                    "password1",
+                    "password2",
+                    "role",
+                ),
             },
         ),
     )

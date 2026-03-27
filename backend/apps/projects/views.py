@@ -20,9 +20,9 @@ class ProjectListCreateView(generics.ListCreateAPIView):
     ordering_fields = ["name", "created_at", "start_date"]
 
     def get_queryset(self):
-        return Project.objects.select_related(
-            "team", "category", "created_by"
-        ).prefetch_related("tasks", "time_entries")
+        return Project.objects.select_related("team", "category", "created_by").prefetch_related(
+            "tasks", "time_entries"
+        )
 
     def get_permissions(self):
         if self.request.method == "POST":

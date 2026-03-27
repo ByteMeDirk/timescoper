@@ -27,13 +27,15 @@ class DailySummaryView(APIView):
             entry_count=Count("id"),
         )
 
-        return Response({
-            "date": date,
-            "user_id": str(user_id),
-            "total_hours": float(agg["total_hours"] or 0),
-            "billable_hours": float(agg["billable_hours"] or 0),
-            "entry_count": agg["entry_count"],
-        })
+        return Response(
+            {
+                "date": date,
+                "user_id": str(user_id),
+                "total_hours": float(agg["total_hours"] or 0),
+                "billable_hours": float(agg["billable_hours"] or 0),
+                "entry_count": agg["entry_count"],
+            }
+        )
 
 
 class WeeklySummaryView(APIView):
@@ -69,20 +71,24 @@ class WeeklySummaryView(APIView):
         for i in range(7):
             day = start + timedelta(days=i)
             day_agg = entries.filter(date=day).aggregate(total=Sum("hours"))
-            daily.append({
-                "date": day.isoformat(),
-                "hours": float(day_agg["total"] or 0),
-            })
+            daily.append(
+                {
+                    "date": day.isoformat(),
+                    "hours": float(day_agg["total"] or 0),
+                }
+            )
 
-        return Response({
-            "week_start": start.isoformat(),
-            "week_end": end.isoformat(),
-            "user_id": str(user_id),
-            "total_hours": float(agg["total_hours"] or 0),
-            "billable_hours": float(agg["billable_hours"] or 0),
-            "entry_count": agg["entry_count"],
-            "daily": daily,
-        })
+        return Response(
+            {
+                "week_start": start.isoformat(),
+                "week_end": end.isoformat(),
+                "user_id": str(user_id),
+                "total_hours": float(agg["total_hours"] or 0),
+                "billable_hours": float(agg["billable_hours"] or 0),
+                "entry_count": agg["entry_count"],
+                "daily": daily,
+            }
+        )
 
 
 class ProjectUtilisationView(APIView):
@@ -118,16 +124,18 @@ class ProjectUtilisationView(APIView):
         total = float(agg["total_hours"] or 0)
         budget = float(project.budget_hours or 0)
 
-        return Response({
-            "project_id": str(project.id),
-            "project_name": project.name,
-            "total_hours": total,
-            "billable_hours": float(agg["billable_hours"] or 0),
-            "budget_hours": budget,
-            "budget_remaining": budget - total if budget else None,
-            "utilisation_pct": round((total / budget) * 100, 1) if budget else None,
-            "entry_count": agg["entry_count"],
-        })
+        return Response(
+            {
+                "project_id": str(project.id),
+                "project_name": project.name,
+                "total_hours": total,
+                "billable_hours": float(agg["billable_hours"] or 0),
+                "budget_hours": budget,
+                "budget_remaining": budget - total if budget else None,
+                "utilisation_pct": round((total / budget) * 100, 1) if budget else None,
+                "entry_count": agg["entry_count"],
+            }
+        )
 
 
 class TeamActivityView(APIView):
@@ -165,19 +173,21 @@ class TeamActivityView(APIView):
             .order_by("-hours")
         )
 
-        return Response({
-            "team_id": team_id,
-            "total_hours": float(agg["total_hours"] or 0),
-            "billable_hours": float(agg["billable_hours"] or 0),
-            "entry_count": agg["entry_count"],
-            "members": [
-                {
-                    "user_id": str(m["user__id"]),
-                    "name": f'{m["user__first_name"]} {m["user__last_name"]}',
-                    "email": m["user__email"],
-                    "hours": float(m["hours"] or 0),
-                    "entries": m["entries"],
-                }
-                for m in member_stats
-            ],
-        })
+        return Response(
+            {
+                "team_id": team_id,
+                "total_hours": float(agg["total_hours"] or 0),
+                "billable_hours": float(agg["billable_hours"] or 0),
+                "entry_count": agg["entry_count"],
+                "members": [
+                    {
+                        "user_id": str(m["user__id"]),
+                        "name": f'{m["user__first_name"]} {m["user__last_name"]}',
+                        "email": m["user__email"],
+                        "hours": float(m["hours"] or 0),
+                        "entries": m["entries"],
+                    }
+                    for m in member_stats
+                ],
+            }
+        )

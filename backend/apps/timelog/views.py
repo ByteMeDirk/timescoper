@@ -16,9 +16,7 @@ class TimeEntryListCreateView(generics.ListCreateAPIView):
     ordering_fields = ["date", "hours", "created_at"]
 
     def get_queryset(self):
-        return TimeEntry.objects.select_related(
-            "user", "task", "project"
-        )
+        return TimeEntry.objects.select_related("user", "task", "project")
 
 
 class TimeEntryDetailView(generics.RetrieveUpdateDestroyAPIView):

@@ -21,9 +21,7 @@ class TeamListCreateView(generics.ListCreateAPIView):
         user = self.request.user
         if user.role in ("admin", "project_manager"):
             return Team.objects.all().select_related("created_by")
-        return Team.objects.filter(
-            memberships__user=user
-        ).select_related("created_by").distinct()
+        return Team.objects.filter(memberships__user=user).select_related("created_by").distinct()
 
     def get_permissions(self):
         if self.request.method == "POST":
@@ -52,9 +50,7 @@ class TeamMemberListView(generics.ListCreateAPIView):
         return TeamMembershipSerializer
 
     def get_queryset(self):
-        return TeamMembership.objects.filter(
-            team_id=self.kwargs["team_pk"]
-        ).select_related("user")
+        return TeamMembership.objects.filter(team_id=self.kwargs["team_pk"]).select_related("user")
 
     def get_permissions(self):
         if self.request.method == "POST":
@@ -71,7 +67,10 @@ class TeamMemberListView(generics.ListCreateAPIView):
         )
         if not created:
             return Response(
-                {"error": "User is already a member of this team.", "code": "already_member"},
+                {
+                    "error": "User is already a member of this team.",
+                    "code": "already_member",
+                },
                 status=status.HTTP_409_CONFLICT,
             )
         return Response(

@@ -14,5 +14,9 @@ urlpatterns = [
     path("me/", views.MeView.as_view(), name="me"),
     # Admin endpoints
     path("admin/users/", views.AdminUserListView.as_view(), name="admin-user-list"),
-    path("admin/users/<uuid:pk>/", views.AdminUserDetailView.as_view(), name="admin-user-detail"),
+    path(
+        "admin/users/<uuid:pk>/",
+        views.AdminUserDetailView.as_view(),
+        name="admin-user-detail",
+    ),
 ]

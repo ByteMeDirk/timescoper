@@ -48,7 +48,12 @@ def team_lead_user(create_user):
 
 @pytest.fixture
 def pm_user(create_user):
-    return create_user(email="pm@example.com", role="project_manager", first_name="Project", last_name="Manager")
+    return create_user(
+        email="pm@example.com",
+        role="project_manager",
+        first_name="Project",
+        last_name="Manager",
+    )
 
 
 @pytest.fixture

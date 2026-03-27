@@ -11,11 +11,7 @@ class IsAdmin(BasePermission):
     """Allow access only to users with the admin role."""
 
     def has_permission(self, request: Request, view: APIView) -> bool:
-        return bool(
-            request.user
-            and request.user.is_authenticated
-            and request.user.role == UserRole.ADMIN
-        )
+        return bool(request.user and request.user.is_authenticated and request.user.role == UserRole.ADMIN)
 
 
 class IsProjectManagerOrAbove(BasePermission):
@@ -24,11 +20,7 @@ class IsProjectManagerOrAbove(BasePermission):
     ALLOWED_ROLES = {UserRole.PROJECT_MANAGER, UserRole.ADMIN}
 
     def has_permission(self, request: Request, view: APIView) -> bool:
-        return bool(
-            request.user
-            and request.user.is_authenticated
-            and request.user.role in self.ALLOWED_ROLES
-        )
+        return bool(request.user and request.user.is_authenticated and request.user.role in self.ALLOWED_ROLES)
 
 
 class IsTeamLeadOrAbove(BasePermission):
@@ -37,11 +29,7 @@ class IsTeamLeadOrAbove(BasePermission):
     ALLOWED_ROLES = {UserRole.TEAM_LEAD, UserRole.PROJECT_MANAGER, UserRole.ADMIN}
 
     def has_permission(self, request: Request, view: APIView) -> bool:
-        return bool(
-            request.user
-            and request.user.is_authenticated
-            and request.user.role in self.ALLOWED_ROLES
-        )
+        return bool(request.user and request.user.is_authenticated and request.user.role in self.ALLOWED_ROLES)
 
 
 class IsOwnerOrTeamLeadOrAbove(BasePermission):
